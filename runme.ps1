@@ -29,7 +29,7 @@ Share current workarea and replace provided notebooks:
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$false)][string]$ImageName="mytest",
+    [Parameter(Mandatory=$false)][string]$ImageName="andreadotti/jupyter-geneva-ds",
     [Parameter(Mandatory=$false)][string]$ContainerName="myjupyter",
     [Parameter(Mandatory=$false)][switch]$KeepContainerAfterUse,
     [Parameter(Mandatory=$false)][switch]$ShareCurrentWorkDir,
@@ -39,8 +39,8 @@ param(
     )
 $pwd=(Convert-Path .)
 Write-Debug "Current Directory is: $pwd"
-Write-Debug "Image name: $ImageName"
-# In linux change user id and add it to the users group w/ --user $(id -u):$(id -g) --add-group users
+Write-debug "image name: $imagename"
+# in linux change user id and add it to the users group w/ --user $(id -u):$(id -g) --add-group users
 # See: https://stackoverflow.com/questions/51120204/docker-how-to-handle-permissions-for-jupyter-notebook-3-approaches-that-do-not
 
 #Define an array of parameters
@@ -52,7 +52,7 @@ $DockerParams=@(
     "-w","/home/jovyan/work"
     )
 If ($KeepContainerAfterUse -eq $false) { $DockerParams=$DockerParams+"--rm" }
-If ($ShareCurrentWorkDir) {$DockerParams=$DockerParams+"-v"+"${pwd}:/home/jovyan/work"}
+If ($ShareCurrentWorkDir) {$DockerParams=$DockerParams+"-v"+"${pwd}:/home/jovyan/work:rw"}
 
 If ($PullImage) {
     Write-Debug "Pull container image"
@@ -82,7 +82,7 @@ Write-Debug "Container started, ready to go $(docker container logs ${ContainerN
 #Container has started from STDOUT get the string that indicates webpage and token to open
 #warning webaddress can be of the format: http://(xxxxxx or 127.0.0.1):8888/?token=.......
 #Need to parse it to extract the IP address and remove what is not needed
-$addrraw=$(docker container logs $ContainerName | Select-String '^\s+http://.*' | Out-String).Trim()
+$addrraw=$(docker container logs $ContainerName | Select-String '^\s+http.*' | Out-String).Trim()
 #                                     1                2              3         4
 $match=[regex]::Match($addrraw,'^(http[s]?://)\(?([a-z0-9]+\sor\s)?([0-9\.]+)\)?(:.*)')
 Start-Process -FilePath $($match.Groups[1].Value+$match.Groups[3].Value+$match.Groups[4].Value | Out-String)
