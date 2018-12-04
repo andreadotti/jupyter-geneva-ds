@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 image_name="andreadotti/jupyter-geneva-ds"
 container_name="myjupyter"
 keepcontainerafteruse=0
@@ -45,7 +45,7 @@ dockerparams="-d -it -p 8888:8888 --name ${container_name} -w /home/jovyan/work"
 echo "Starting docker container named ${container_name} with id:"
 echo docker run $dockerparams $image_name
 
-sleep 1s
+#sleep 1s
 msg=`docker container ls | grep ${container_name}`
 ctr=0
 while [ $ctr -le $maxwaittime ] && [ X"${msg}" == X ];do
@@ -64,8 +64,5 @@ addrraw=`docker container logs ${container_name} | grep -E '^\s+http'`
 echo "The jupyter instance can be reached at:"
 #warning webaddress can be of the format: http://(xxxxxx or 127.0.0.1):8888/?token=.......
 #Need to parse it to extract the IP address and remove what is not needed
-echo $addrraw  | sed 's/^\(http[s]*:\/\/\)[([a-z0-9]* or ]*\ ([0-9.]*\)[)]*:\(.*\)/\1\2:\3/'
+echo $addrraw  | sed 's/^\(http[s]*:\/\/\)[([a-z0-9]* or ]*\([0-9.]*\)[)]*:\(.*\)/\1\2:\3/'
 match=`echo $addrraw | cut -d: -f2 | cut -d' ' -f3 | sed 's/)//g'`
-
-echo $addrraw
-echo $match

@@ -7,7 +7,7 @@ packages and configurations.
 
 The container can be run with an helper script or manually.
 
-## Use helper scripts
+## Use helper scripts
 
 ### Windows 10 
 
@@ -18,7 +18,7 @@ Get help with: `Get-Help .\runme.ps1`.
 
 TODO
 
-## Run without helper scripts
+## Run without helper scripts
 
 Assuming you want to share the host directory `<myhostdirectory>`.
 The image can be run manually with:
