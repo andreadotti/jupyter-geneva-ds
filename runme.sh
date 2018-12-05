@@ -43,14 +43,13 @@ dockerparams="-d -it -p 8888:8888 --name ${container_name} -w /home/jovyan/work"
 [ $pullimage -eq 1 ] && docker pull $image_name
 
 echo "Starting docker container named ${container_name} with id:"
-echo docker run $dockerparams $image_name
+docker run $dockerparams $image_name
+sleep 1s
 
-#sleep 1s
 msg=`docker container ls | grep ${container_name}`
 ctr=0
 while [ $ctr -le $maxwaittime ] && [ X"${msg}" == X ];do
     ctr=$((ctr+1))
-    echo $ctr
     msg=`docker container ls | grep ${container_name}`
     sleep 1s
 done 
@@ -61,8 +60,21 @@ if [ $ctr -ge $maxwaittime ];then
 fi
 
 addrraw=`docker container logs ${container_name} | grep -E '^\s+http'`
+#There is the possibility I arrive here and the container did not arrive yet to write the output,
+ctr=0
+while [ $ctr -le $maxwaittime ] && [ X"${addrraw}" == X ];do
+    ctr=$((ctr+1))
+    addrraw=`docker container logs ${container_name} | grep -E '^\s+http'`
+    sleep 1s
+done
+
+if [ $ctr -ge $maxwaittime ];then
+    echo "Error, container output is not correct, maybe container did not start correctly maybe container did not start correctly (check that webaddress is present with 'docker container logs ${container_name})?"
+    exit 1
+fi
+
 echo "The jupyter instance can be reached at:"
 #warning webaddress can be of the format: http://(xxxxxx or 127.0.0.1):8888/?token=.......
 #Need to parse it to extract the IP address and remove what is not needed
 echo $addrraw  | sed 's/^\(http[s]*:\/\/\)[([a-z0-9]* or ]*\([0-9.]*\)[)]*:\(.*\)/\1\2:\3/'
-match=`echo $addrraw | cut -d: -f2 | cut -d' ' -f3 | sed 's/)//g'`
+#match=`echo $addrraw | cut -d: -f2 | cut -d' ' -f3 | sed 's/)//g'`

@@ -79,6 +79,18 @@ If ($ctr -ge $MaxWaitTime) {
 
 Write-Debug "Container started, ready to go $(docker container logs ${ContainerName})" | Out-String
 
+#On a very slow computer it is possible that the container has not yet reached the needed information
+#to stdout, let's wait for the needed string...
+$ctr=0
+while ($(docker.exe container logs $ContainerName | Select-String '^\s+http.*' | Out-String).Length -eq 0 -AND $ctr -le $MaxWaitTime ) {
+    Write-Debug "Container is alive, waiting for address to be written..."
+    Start-Sleep -s 1
+    $ctr=$ctr+1
+}
+If ($ctr -ge $MaxWaitTime) {
+    Write-Error "Error, container output is not correct, maybe container did not start correctly (check that webaddress is present with 'docker container logs ${ContainerName})?"
+    exit 2
+}
 #Container has started from STDOUT get the string that indicates webpage and token to open
 #warning webaddress can be of the format: http://(xxxxxx or 127.0.0.1):8888/?token=.......
 #Need to parse it to extract the IP address and remove what is not needed
