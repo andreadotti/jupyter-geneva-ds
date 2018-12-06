@@ -16,7 +16,8 @@ Get help with: `Get-Help .\runme.ps1`.
 
 ### Linux/Mac OS X
 
-TODO
+In a terminal use the `runme.sh` script.  
+Get help with: `./runme.sh -h`.
 
 ## Run without helper scripts
 
@@ -51,6 +52,6 @@ TODO
 A python package can be added modifying the `environment.yml` file.  
 A post install script `post-install.sh` is run after installing the python packages, provide additional configuration/installation steps in this script.
 
-## List of installed software
+## List of installed software
 
 Build and run the image, the list of available packages will be appended to this README file.

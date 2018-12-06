@@ -6,9 +6,21 @@ sharecurrenworkdir=0
 maxwaittime=10
 pullimage=0
 
-usage() { echo "Usage: $0 [-s <45|90>] [-p <string>]" 1>&2; exit 1; }
+usage() { 
+  echo "Usage: $0 [-i <image_name>] [-c <container_name> ] [-k] [-s] [-t N] [-p] [-h]" 1>&2
+  echo "  Where: " 1>&2
+  echo "    -i <image_name> : specify the docker container image name to use (default ${image_name})" 1>&2
+  echo "    -c <container_name> : specify the docker container name to use (default ${container_name})" 1>&2
+  echo "    -k : instruct doker to keep the container instance after use (default remove). Note that image is not removed, only container instance" 1>&2
+  echo "    -s : share with container instance the current directory in read-write mode" 1>&2
+  echo "    -t <N> : specify timeout operations (default 10 s)" 1>&2
+  echo "    -p : pull/update docker container image" 1>&2
+  echo "    -h : show this help" 1>&2
+  echo "  See: https://github.com/andreadotti/jupyter-geneva-ds for additional information" 1>&2
 
-while getopts "i:c:kst:p" o; do
+}
+
+while getopts "i:c:kst:ph" o; do
     case "${o}" in
         i)
             image_name="${OPTARG}"
@@ -28,8 +40,13 @@ while getopts "i:c:kst:p" o; do
         p)
             pullimage=1
             ;;
+	h)
+	    usage
+	    exit 0
+	    ;;
         *)
             usage
+	    exit 1
             ;;
     esac
 done
