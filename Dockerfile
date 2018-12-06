@@ -9,3 +9,5 @@ RUN cp /source/readme.md work/README.md && \
     echo "\`\`\`" >> work/README.md  
 RUN pandoc -s -f markdown -t html --metadata title=README -o work/README.html work/README.md
 RUN . /source/post-install.sh
+USER root
+RUN rm -rf /source
