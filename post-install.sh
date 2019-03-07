@@ -11,4 +11,6 @@ jupyter nbextension enable comment-uncomment/main --sys-prefix
 jupyter nbextension enable collapsible_headings/main --sys-prefix
 jupyter nbextension enable toc2/main --sys-prefix
 jupyter nbextension enable execute_time/ExecuteTime --sys-prefix
+jupyter nbextension enable spellchecker/main --sys-prefix
+jupyter nbextension enable table_beautifier/main --sys-prefix
 python -m nltk.downloader all
