@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #There is an issue with nbextensions configurator
 # https://github.com/Jupyter-contrib/jupyter_nbextensions_configurator/issues/82
 #manually turn on extensions that are needed after installing
